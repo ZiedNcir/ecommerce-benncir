@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { createCategory, deleteCategory, getCategories, getCategoryById, getCategoryTree, updateCategory } from '../controllers/category.controller.ts';
+import { adminOnly, protect } from '../middlewares/auth.middleware.ts';
+import asyncHandler from '../middlewares/asyncHandler.ts';
+const router = Router();
+router.get('/tree', asyncHandler(getCategoryTree));
+router.get('/', asyncHandler(getCategories));
+router.get('/:id', asyncHandler(getCategoryById));
+router.post('/', protect, adminOnly, asyncHandler(createCategory));
+router.put('/:id', protect, adminOnly, asyncHandler(updateCategory));
+router.delete('/:id', protect, adminOnly, asyncHandler(deleteCategory));
+export default router;

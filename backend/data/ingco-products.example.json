@@ -1,0 +1,32 @@
+{
+  "source": "https://ingco.tn",
+  "generatedAt": "2026-07-22T00:00:00.000Z",
+  "productCount": 1,
+  "errorCount": 0,
+  "products": [
+    {
+      "name": "Caisse à outils 148 pcs avec visseuse 12 V INGCO",
+      "slug": "caisse-a-outils-148pcs-visseuse-12v-ingco",
+      "description": "Caisse à outils avec visseuse 12 V, batterie et valise d’outils.",
+      "shortDescription": "Ensemble d’outillage INGCO 148 pièces avec visseuse 12 V.",
+      "price": 179,
+      "oldPrice": 200,
+      "stock": 10,
+      "images": [],
+      "sku": "",
+      "brand": "INGCO",
+      "rating": 5,
+      "reviews": 0,
+      "tags": ["INGCO", "Caisse à outils INGCO"],
+      "featured": false,
+      "isActive": true,
+      "sourceName": "ingco.tn",
+      "sourceUrl": "https://ingco.tn/produit/caisse-a-outils-148pcs-visseuse-12v-ingco/",
+      "sourceExternalId": "caisse-a-outils-148pcs-visseuse-12v-ingco",
+      "sourceCategoryName": "Caisse à outils INGCO",
+      "sourceCategorySlug": "caisse-a-outils-ingco",
+      "importedAt": "2026-07-22T00:00:00.000Z"
+    }
+  ],
+  "errors": []
+}

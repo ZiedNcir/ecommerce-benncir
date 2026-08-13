@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { createOrder, deleteOrder, getDashboardAnalytics, getMyOrders, getOrderById, getOrders, updateOrderStatus } from '../controllers/order.controller.ts';
+import { adminOnly, protect } from '../middlewares/auth.middleware.ts';
+import asyncHandler from '../middlewares/asyncHandler.ts';
+const router=Router();
+router.post('/',asyncHandler(createOrder));
+router.get('/my-orders',protect,asyncHandler(getMyOrders));
+router.get('/analytics/dashboard',protect,adminOnly,asyncHandler(getDashboardAnalytics));
+router.get('/',protect,adminOnly,asyncHandler(getOrders));
+router.get('/:id',protect,adminOnly,asyncHandler(getOrderById));
+router.patch('/:id/status',protect,adminOnly,asyncHandler(updateOrderStatus));
+router.delete('/:id',protect,adminOnly,asyncHandler(deleteOrder));
+export default router;
