@@ -3,6 +3,9 @@ import Product from '../models/Product.ts';
 import Category from '../models/Category.ts';
 import User from '../models/User.ts';
 import { sendAdminOrderEmail } from '../utils/mailer.ts';
+import { escapeRegex } from '../utils/security.ts';
+import { requireEmail, requirePositiveInteger, requireText } from '../utils/validation.ts';
+import { calculateOrderTotals, canRestoreStock } from '../utils/orderRules.ts';
 
 async function hydrateItems(items = []) {
   if (!Array.isArray(items) || !items.length) throw Object.assign(new Error('La commande doit contenir au moins un produit'), { statusCode: 400 });
@@ -12,7 +15,7 @@ async function hydrateItems(items = []) {
   return items.map((item) => {
     const product = map.get(String(item.product));
     if (!product) throw Object.assign(new Error('Un produit de la commande est introuvable ou inactif'), { statusCode: 400 });
-    const quantity = Math.max(1, Math.floor(Number(item.quantity || 1)));
+    const quantity = requirePositiveInteger(item.quantity, 'Quantité');
     if (quantity > Number(product.stock || 0)) throw Object.assign(new Error(`Stock insuffisant pour ${product.name}`), { statusCode: 409 });
     return { product: product._id, name: product.name, price: product.price, quantity, image: product.images?.[0] || '', categories: (product.categories as any[]).map((c) => ({ _id: c._id, name: c.name, slug: c.slug })) };
   });
@@ -50,24 +53,24 @@ export async function createOrder(req, res) {
   if (missingFields.length) return res.status(400).json({ message: `Informations client manquantes : ${missingFields.join(', ')}` });
 
   const items = await hydrateItems(requestedItems);
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { subtotal, total } = calculateOrderTotals(items, 7);
   await updateStock(items, -1);
   let order;
   try {
     order = await Order.create({
       customer: {
-        fullName: String(customer.fullName).trim(),
-        email: String(customer.email).trim().toLowerCase(),
-        phone: String(customer.phone).trim(),
-        address: String(customer.address).trim(),
-        city: String(customer.city).trim(),
-        governorate: String(customer.governorate || '').trim(),
-        postalCode: String(customer.postalCode || '').trim(),
+        fullName: requireText(customer.fullName, 'Nom', { max: 120 }),
+        email: requireEmail(customer.email),
+        phone: requireText(customer.phone, 'Téléphone', { max: 40 }),
+        address: requireText(customer.address, 'Adresse', { max: 300 }),
+        city: requireText(customer.city, 'Ville', { max: 120 }),
+        governorate: String(customer.governorate || '').trim().slice(0, 120),
+        postalCode: String(customer.postalCode || '').trim().slice(0, 20),
         country: 'Tunisie',
       },
       items,
       subtotal,
-      total: subtotal + 7,
+      total,
       paymentMethod: 'cash_on_delivery',
       note: String(note || '').trim().slice(0, 1000),
       user: req.user?._id,
@@ -94,7 +97,7 @@ export async function createOrder(req, res) {
 export async function getOrders(req, res) {
   const { status, search, page = 1, limit = 30 } = req.query; const filter: any = {};
   if (status && status !== 'all') filter.status = status;
-  if (search) { const v = String(search).trim(); filter.$or = [{ orderNumber: { $regex:v,$options:'i' } },{ 'customer.fullName': { $regex:v,$options:'i' } },{ 'customer.email': { $regex:v,$options:'i' } },{ 'customer.phone': { $regex:v,$options:'i' } }]; }
+  if (search) { const v = escapeRegex(String(search).trim()); filter.$or = [{ orderNumber: { $regex:v,$options:'i' } },{ 'customer.fullName': { $regex:v,$options:'i' } },{ 'customer.email': { $regex:v,$options:'i' } },{ 'customer.phone': { $regex:v,$options:'i' } }]; }
   const currentPage=Math.max(Number(page),1), perPage=Math.min(Math.max(Number(limit),1),100);
   const [items,total]=await Promise.all([Order.find(filter).populate('user','name email').sort({createdAt:-1}).skip((currentPage-1)*perPage).limit(perPage),Order.countDocuments(filter)]);
   res.json({items,total,page:currentPage,pages:Math.ceil(total/perPage)||1});
@@ -112,7 +115,7 @@ export async function updateOrderStatus(req,res){
   const order=await Order.findById(req.params.id);
   if(!order)return res.status(404).json({message:'Commande introuvable'});
   if(order.status==='cancelled'&&nextStatus!=='cancelled')return res.status(409).json({message:'Une commande annulée ne peut pas être réactivée'});
-  if(nextStatus==='cancelled'&&!order.stockRestored){
+  if(nextStatus==='cancelled'&&canRestoreStock(order)){
     await updateStock(order.items,1);
     order.stockRestored=true;
   }
@@ -126,7 +129,7 @@ export async function updateOrderStatus(req,res){
 export async function deleteOrder(req,res){
   const order=await Order.findById(req.params.id);
   if(!order)return res.status(404).json({message:'Commande introuvable'});
-  if(!order.stockRestored) await updateStock(order.items,1);
+  if(canRestoreStock(order)) await updateStock(order.items,1);
   await order.deleteOne();
   res.json({message:'Commande supprimée et stock rétabli',orderId:req.params.id});
 }

@@ -58,6 +58,8 @@ Le frontend est exposé sur le port `8080`, le backend sur `5000` et MongoDB res
 - Commande : `npm ci --omit=dev && npm start`
 - Variables obligatoires : `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`
 - `CLIENT_URL` accepte plusieurs domaines séparés par des virgules.
+- En production, `JWT_SECRET` doit être aléatoire et contenir au moins 32 caractères ; les valeurs de démonstration sont refusées.
+- Les suppressions de produits et catégories sont des désactivations réversibles afin de préserver l’historique des commandes.
 - Point de contrôle : `/api/health`
 
 ## Première administration

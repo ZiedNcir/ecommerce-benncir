@@ -1,17 +1,18 @@
 import nodemailer from 'nodemailer';
+import { escapeHtml } from './html.ts';
 
 function money(value) {
   return `${Number(value || 0).toFixed(2)} DT`;
 }
 
 export function renderAdminOrderEmail(order) {
-  const rows = order.items.map((item) => `<tr><td style="padding:8px;border-bottom:1px solid #eee">${item.name}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:center">${item.quantity}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${money(item.price)}</td></tr>`).join('');
+  const rows = order.items.map((item) => `<tr><td style="padding:8px;border-bottom:1px solid #eee">${escapeHtml(item.name)}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:center">${escapeHtml(item.quantity)}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${money(item.price)}</td></tr>`).join('');
   return `
     <div style="font-family:Arial,sans-serif;color:#111827;max-width:720px;margin:auto">
-      <h1 style="margin:0 0 8px">Nouvelle commande ${order.orderNumber}</h1>
+      <h1 style="margin:0 0 8px">Nouvelle commande ${escapeHtml(order.orderNumber)}</h1>
       <p style="color:#667085">Une commande vient d'être confirmée sur BÊN NCÎR Commerce.</p>
       <h2>Client</h2>
-      <p><b>${order.customer.fullName}</b><br>${order.customer.phone}<br>${order.customer.email}<br>${order.customer.address}, ${order.customer.city}</p>
+      <p><b>${escapeHtml(order.customer.fullName)}</b><br>${escapeHtml(order.customer.phone)}<br>${escapeHtml(order.customer.email)}<br>${escapeHtml(order.customer.address)}, ${escapeHtml(order.customer.city)}</p>
       <h2>Articles</h2>
       <table style="width:100%;border-collapse:collapse"><thead><tr><th align="left">Produit</th><th>Qté</th><th align="right">Prix</th></tr></thead><tbody>${rows}</tbody></table>
       <p style="font-size:18px"><b>Total : ${money(order.total)}</b></p>

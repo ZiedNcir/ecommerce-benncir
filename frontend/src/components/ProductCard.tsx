@@ -1,6 +1,7 @@
 import { Heart, PlayCircle, ShoppingCart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore.ts';
+import ImageWithSkeleton from './ImageWithSkeleton.tsx';
 import { useFavoriteStore } from '../store/favoriteStore.ts';
 
 const getImage = (product) => product?.image || product?.images?.[0] || 'https://placehold.co/700x520?text=Product';
@@ -18,7 +19,7 @@ export default function ProductCard({ product }) {
     <article className="product-card">
       {discount ? <span className={String(discount).includes('-') ? 'badge sale' : 'badge new'}>{discount}</span> : null}
       <button className={`wish ${isFavorite ? 'active' : ''}`} onClick={() => toggleFavorite(product)} aria-label="Ajouter aux favoris"><Heart size={21} fill={isFavorite ? 'currentColor' : 'none'} /></button>
-      <Link to={`/product/${id}`} className="product-img"><img src={getImage(product)} alt={product.name} />{product.demoVideo ? <span className="video-chip"><PlayCircle size={15} /> Vidéo</span> : null}</Link>
+      <Link to={`/product/${id}`} className="product-img"><ImageWithSkeleton src={getImage(product)} alt={product.name} />{product.demoVideo ? <span className="video-chip"><PlayCircle size={15} /> Vidéo</span> : null}</Link>
       <div className="product-info">
         {categoryName ? <small className="product-category-label">{categoryName}</small> : null}
         <Link to={`/product/${id}`}><h3>{product.name}</h3></Link>

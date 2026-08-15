@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
+    "test": "node --import tsx --test src/**/*.test.ts",
     "seed": "tsx src/seed.ts",
     "seed:categories": "tsx src/seedCategories.ts",
     "scrape:ingco": "tsx src/scrapers/ingco.scraper.ts",

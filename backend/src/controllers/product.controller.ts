@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import Product from '../models/Product.ts';
 import Category from '../models/Category.ts';
+import { escapeRegex } from '../utils/security.ts';
+import { deactivateProduct } from '../utils/catalogLifecycle.ts';
+import { getPagination } from '../utils/pagination.ts';
 
 const isObjectId = (value) => mongoose.Types.ObjectId.isValid(value);
 const numberOrUndefined = (value) => (value === undefined || value === '' ? undefined : Number(value));
@@ -42,7 +45,7 @@ async function buildProductFilter(query) {
   if (categoryIds.length) filter.categories = { $in: categoryIds };
 
   if (search) {
-    const safeSearch = String(search).trim();
+    const safeSearch = escapeRegex(String(search).trim());
     filter.$or = [
       { name: { $regex: safeSearch, $options: 'i' } },
       { description: { $regex: safeSearch, $options: 'i' } },
@@ -86,16 +89,12 @@ function populateProduct(query) {
 
 export async function getProducts(req, res) {
   const filter = await buildProductFilter(req.query);
-  const sort = getSort(req.query.sort);
-  const page = Math.max(Number(req.query.page || 1), 1);
-  const limit = Math.min(Math.max(Number(req.query.limit || 24), 1), 60);
-  const skip = (page - 1) * limit;
+  const sort = { ...getSort(req.query.sort), _id: 1 };
   const withMeta = req.query.meta === 'true';
+  const total = await Product.countDocuments(filter);
+  const { page, limit, pages, skip } = getPagination(req.query, total);
 
-  const [items, total] = await Promise.all([
-    populateProduct(Product.find(filter)).sort(sort).skip(skip).limit(limit),
-    Product.countDocuments(filter)
-  ]);
+  const items = await populateProduct(Product.find(filter)).sort(sort).skip(skip).limit(limit);
 
   if (!withMeta) return res.json(items);
 
@@ -118,7 +117,7 @@ export async function getProducts(req, res) {
     total,
     page,
     limit,
-    pages: Math.ceil(total / limit) || 1,
+    pages,
     filters: {
       categories,
       brands: brands.filter(Boolean).sort(),
@@ -166,7 +165,7 @@ export async function updateProduct(req, res) {
 }
 
 export async function deleteProduct(req, res) {
-  const product = await Product.findByIdAndDelete(req.params.id);
+  const product = await deactivateProduct(req.params.id);
   if (!product) return res.status(404).json({ message: 'Product not found' });
-  res.json({ message: 'Product deleted successfully', productId: req.params.id });
+  res.json({ message: 'Product deactivated successfully', productId: req.params.id, deactivated: true });
 }

@@ -59,7 +59,7 @@ export default function AdminOrders() {
             <td>{order.delivery?.label || 'Livraison à domicile'}<br /><small>{Number(order.delivery?.fee ?? order.deliveryFee ?? 0).toFixed(2)} DT</small></td>
             <td><b>{Number(order.total || order.totalPrice || 0).toFixed(2)} DT</b></td>
             <td>À la livraison</td>
-            <td><select className="admin-status-select" value={order.status || 'pending'} onChange={(event) => updateStatus(order, event.target.value)}>{statuses.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></td>
+            <td><span className={`status-badge ${order.status || 'pending'}`}>{labels[order.status] || 'En attente'}</span><select className="admin-status-select" value={order.status || 'pending'} onChange={(event) => updateStatus(order, event.target.value)} aria-label={`Modifier le statut de ${order.orderNumber}`}>{statuses.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></td>
             <td>{order.adminEmailSent ? 'Envoyé' : order.adminEmailError ? 'Erreur' : 'En attente'}</td>
             <td className="admin-actions"><Link className="outline" to={`/admin/orders/${order._id}`}>Détails</Link><button className="outline danger" type="button" onClick={() => remove(order)}><Trash2 size={16} /> Supprimer</button></td>
           </tr>)}</tbody>

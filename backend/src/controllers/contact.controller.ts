@@ -1,22 +1,21 @@
 import ContactMessage from '../models/ContactMessage.ts';
+import { escapeRegex } from '../utils/security.ts';
+import { requireEmail, requireText } from '../utils/validation.ts';
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const statuses = ['new', 'read', 'replied', 'archived'];
 
 export async function createContactMessage(req, res) {
-  const { fullName, email, phone = '', subject, message } = req.body || {};
-  if (![fullName, email, subject, message].every((value) => String(value || '').trim())) {
-    return res.status(400).json({ message: 'Nom, email, sujet et message sont obligatoires' });
-  }
-  if (!emailPattern.test(String(email).trim())) {
-    return res.status(400).json({ message: 'Adresse email invalide' });
-  }
+  const fullName = requireText(req.body?.fullName, 'Nom', { max: 120 });
+  const email = requireEmail(req.body?.email, 'Adresse email');
+  const subject = requireText(req.body?.subject, 'Sujet', { max: 120 });
+  const message = requireText(req.body?.message, 'Message', { max: 3000 });
+  const phone = String(req.body?.phone || '').trim().slice(0, 40);
   const created = await ContactMessage.create({
-    fullName: String(fullName).trim(),
-    email: String(email).trim().toLowerCase(),
-    phone: String(phone).trim(),
-    subject: String(subject).trim(),
-    message: String(message).trim(),
+    fullName,
+    email,
+    phone,
+    subject,
+    message,
   });
   res.status(201).json({
     _id: created._id,
@@ -31,7 +30,7 @@ export async function getContactMessages(req, res) {
   const filter: Record<string, unknown> = {};
   if (status && status !== 'all') filter.status = status;
   if (search) {
-    const value = String(search).trim();
+    const value = escapeRegex(String(search).trim());
     filter.$or = ['fullName', 'email', 'phone', 'subject', 'message']
       .map((field) => ({ [field]: { $regex: value, $options: 'i' } }));
   }
@@ -74,4 +73,3 @@ export async function deleteContactMessage(req, res) {
   if (!item) return res.status(404).json({ message: 'Message introuvable' });
   res.json({ message: 'Message supprimé', messageId: req.params.id });
 }
-

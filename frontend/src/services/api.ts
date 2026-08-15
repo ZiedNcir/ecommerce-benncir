@@ -2,7 +2,7 @@ import axios from 'axios';
 import { categories as demoCategories, products as demoProducts } from '../assets/mockData.ts';
 
 export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
-export const DEMO_MODE = String(import.meta.env.VITE_ENABLE_DEMO || 'false') === 'true';
+export const DEMO_MODE = false;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -116,10 +116,7 @@ function filterProducts(params: any = {}) {
   return params.meta ? { items: paginated, total, page, pages, filters } : paginated;
 }
 
-const withDemoFallback = (request, fallbackFactory) => request.catch((error) => {
-  if (!DEMO_MODE) throw error;
-  return wait(typeof fallbackFactory === 'function' ? fallbackFactory() : fallbackFactory);
-});
+const withDemoFallback = (request, _fallbackFactory?) => request;
 
 export function getApiError(error, fallback = 'Une erreur est survenue') {
   return error.response?.data?.message || error.message || fallback;

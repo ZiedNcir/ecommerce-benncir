@@ -5,6 +5,7 @@ import Breadcrumb from '../../components/Breadcrumb.tsx';
 import BenefitBar from '../../components/BenefitBar.tsx';
 import { useCartStore } from '../../store/cartStore.ts';
 import { ordersApi } from '../../services/api.ts';
+import ImageWithSkeleton from '../../components/ImageWithSkeleton.tsx';
 
 const DELIVERY_FEE = 7;
 
@@ -133,7 +134,7 @@ export default function Checkout() {
         </section>
         <aside className="summary checkout">
           <h2>Récapitulatif de la commande</h2>
-          {items.map((item) => <p key={item._id || item.id}><span><img src={item.image || item.images?.[0]} alt="" />{item.name}<small>Quantité : {item.qty}</small></span><b>{Number(item.price * item.qty).toFixed(2)} DT</b></p>)}
+          {items.map((item) => <p key={item._id || item.id}><span><ImageWithSkeleton wrapperClassName="checkout-product-image" src={item.image || item.images?.[0]} alt="" />{item.name}<small>Quantité : {item.qty}</small></span><b>{Number(item.price * item.qty).toFixed(2)} DT</b></p>)}
           <hr />
           <p>Sous-total<b>{subtotal().toFixed(2)} DT</b></p>
           <p>Livraison à domicile<b>7,00 DT</b></p>

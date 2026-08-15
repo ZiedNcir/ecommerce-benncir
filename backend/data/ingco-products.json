@@ -1,10 +1,10 @@
 {
   "source": "https://ingco.tn",
-  "generatedAt": "2026-07-26T22:27:07.476Z",
+  "generatedAt": "2026-08-14T06:49:21.840Z",
   "complete": true,
   "resumed": true,
-  "discoveredCount": 398,
-  "productCount": 398,
+  "discoveredCount": 390,
+  "productCount": 402,
   "errorCount": 3,
   "products": [
     {
@@ -14882,9 +14882,163 @@
       "sourceCategoryName": "Batterie et chargeur INGCO",
       "sourceCategorySlug": "batterie-et-chargeur",
       "importedAt": "2026-07-26T22:27:06.075Z"
+    },
+    {
+      "name": "Couronne de forage ingco 80mm",
+      "slug": "couronne-de-forage-ingco-80mm",
+      "description": "Couronne de forage ingco 80mm",
+      "shortDescription": "Couronne de forage ingco 80mm",
+      "price": 49,
+      "oldPrice": 70,
+      "stock": 10,
+      "stockEstimated": true,
+      "availability": "in_stock",
+      "images": [
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-700x700.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-300x300.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-800x800.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-150x150.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-768x768.webp",
+        "https://ingco.tn/wp-content/uploads/2026/08/COURONNE-DE-FORAGE-INGCO-80MM-430x430.webp"
+      ],
+      "sku": "35629",
+      "brand": "INGCO",
+      "rating": 0,
+      "reviews": 0,
+      "tags": [
+        "INGCO",
+        "Batterie et chargeur INGCO",
+        "35629"
+      ],
+      "featured": false,
+      "isActive": true,
+      "sourceName": "ingco.tn",
+      "sourceUrl": "https://ingco.tn/produit/couronne-de-forage-ingco-80mm/",
+      "sourceExternalId": "35629",
+      "sourceCategoryName": "Batterie et chargeur INGCO",
+      "sourceCategorySlug": "batterie-et-chargeur",
+      "importedAt": "2026-08-14T06:49:05.547Z"
+    },
+    {
+      "name": "Groupe electrogene ingco 1200w",
+      "slug": "groupe-electrogene-ingco-1200w",
+      "description": "Groupe electrogene ingco 1200w",
+      "shortDescription": "Groupe electrogene ingco 1200w",
+      "price": 599,
+      "oldPrice": 0,
+      "stock": 10,
+      "stockEstimated": true,
+      "availability": "in_stock",
+      "images": [
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-700x700.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-300x300.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-800x800.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-150x150.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-768x768.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/GROUPE-ELECTROGENE-INGCO-1200W-3-430x430.webp"
+      ],
+      "sku": "13372",
+      "brand": "INGCO",
+      "rating": 0,
+      "reviews": 0,
+      "tags": [
+        "INGCO",
+        "Batterie et chargeur INGCO",
+        "13372"
+      ],
+      "featured": false,
+      "isActive": true,
+      "sourceName": "ingco.tn",
+      "sourceUrl": "https://ingco.tn/produit/groupe-electrogene-ingco-1200w/",
+      "sourceExternalId": "13372",
+      "sourceCategoryName": "Batterie et chargeur INGCO",
+      "sourceCategorySlug": "batterie-et-chargeur",
+      "importedAt": "2026-08-14T06:49:10.465Z"
+    },
+    {
+      "name": "Pistolet de karcher ingco",
+      "slug": "pistolet-de-karcher-ingco",
+      "description": "Pistolet de karcher ingco",
+      "shortDescription": "Pistolet de karcher ingco",
+      "price": 67,
+      "oldPrice": 100,
+      "stock": 10,
+      "stockEstimated": true,
+      "availability": "in_stock",
+      "images": [
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-700x700.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-300x300.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-800x800.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-150x150.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-768x768.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/PISTOLET-DE-KARCHER-INGCO-430x430.webp"
+      ],
+      "sku": "11308",
+      "brand": "INGCO",
+      "rating": 0,
+      "reviews": 0,
+      "tags": [
+        "INGCO",
+        "Batterie et chargeur INGCO",
+        "11308"
+      ],
+      "featured": false,
+      "isActive": true,
+      "sourceName": "ingco.tn",
+      "sourceUrl": "https://ingco.tn/produit/pistolet-de-karcher-ingco/",
+      "sourceExternalId": "11308",
+      "sourceCategoryName": "Batterie et chargeur INGCO",
+      "sourceCategorySlug": "batterie-et-chargeur",
+      "importedAt": "2026-08-14T06:49:15.585Z"
+    },
+    {
+      "name": "Scie arboricole 330 mm ingco",
+      "slug": "scie-arboricole-330-mm-ingco",
+      "description": "Scie arboricole 330 mm ingco",
+      "shortDescription": "Scie arboricole 330 mm ingco",
+      "price": 28,
+      "oldPrice": 289,
+      "stock": 10,
+      "stockEstimated": true,
+      "availability": "in_stock",
+      "images": [
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-700x700.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-300x300.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-800x800.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-150x150.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-768x768.webp",
+        "https://ingco.tn/wp-content/uploads/2026/07/SCIE-ARBORICOLE-330-MM-INGCO-430x430.webp"
+      ],
+      "sku": "8639",
+      "brand": "[object Object]",
+      "rating": 0,
+      "reviews": 0,
+      "tags": [
+        "INGCO",
+        "Batterie et chargeur INGCO",
+        "8639"
+      ],
+      "featured": false,
+      "isActive": true,
+      "sourceName": "ingco.tn",
+      "sourceUrl": "https://ingco.tn/produit/scie-arboricole-330-mm-ingco/",
+      "sourceExternalId": "8639",
+      "sourceCategoryName": "Batterie et chargeur INGCO",
+      "sourceCategorySlug": "batterie-et-chargeur",
+      "importedAt": "2026-08-14T06:49:20.439Z"
     }
   ],
   "errors": [
+    {
+      "stage": "listing",
+      "url": "https://ingco.tn/boutique/page/34/",
+      "message": "HTTP 404 pour https://ingco.tn/boutique/page/34/",
+      "status": 404
+    },
     {
       "stage": "listing",
       "url": "https://ingco.tn/boutique/page/35/",
@@ -14895,12 +15049,6 @@
       "stage": "listing",
       "url": "https://ingco.tn/boutique/page/36/",
       "message": "HTTP 404 pour https://ingco.tn/boutique/page/36/",
-      "status": 404
-    },
-    {
-      "stage": "listing",
-      "url": "https://ingco.tn/boutique/page/37/",
-      "message": "HTTP 404 pour https://ingco.tn/boutique/page/37/",
       "status": 404
     }
   ]

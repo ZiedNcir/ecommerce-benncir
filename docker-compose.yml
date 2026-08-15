@@ -1,16 +1,11 @@
 services:
-  mongo:
-    image: mongo:7
-    restart: unless-stopped
-    volumes:
-      - mongo_data:/data/db
   backend:
     build: ./backend
     restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: 5000
-      MONGO_URI: mongodb://mongo:27017/ecommerce_bencir
+      MONGO_URI: ${MONGO_URI}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: 7d
       CLIENT_URL: ${CLIENT_URL}
@@ -21,8 +16,6 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-BÊN NCÎR Commerce <no-reply@example.com>}
       ADMIN_ORDER_EMAIL: ${ADMIN_ORDER_EMAIL:-}
-    depends_on:
-      - mongo
     ports:
       - "5000:5000"
   frontend:
@@ -36,5 +29,3 @@ services:
       - "8080:80"
     depends_on:
       - backend
-volumes:
-  mongo_data:

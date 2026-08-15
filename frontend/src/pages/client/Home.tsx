@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
+  ChevronLeft,
   ChevronRight,
   CreditCard,
   Headphones,
@@ -43,6 +44,36 @@ const blogItems = [
   { tag: 'Technologie', title: 'Comment choisir les bons accessoires pour votre quotidien ?', image: 'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&w=800&q=82' },
   { tag: 'Shopping', title: 'Nos conseils pour acheter en ligne en toute sérénité', image: 'https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&w=800&q=82' },
 ];
+
+function ScrollPager({ children, count, label }) {
+  const railRef = useRef(null);
+  const [active, setActive] = useState(0);
+
+  function updatePosition() {
+    const rail = railRef.current;
+    const firstItem = rail?.firstElementChild;
+    if (!rail || !firstItem) return;
+    const step = firstItem.getBoundingClientRect().width + 12;
+    setActive(Math.min(count - 1, Math.round(rail.scrollLeft / step)));
+  }
+
+  function move(direction) {
+    const rail = railRef.current;
+    if (!rail) return;
+    rail.scrollBy({ left: direction * rail.clientWidth * 0.82, behavior: 'smooth' });
+  }
+
+  return (
+    <div className="mobile-scroll-pager">
+      <div className="mobile-scroll-track" ref={railRef} onScroll={updatePosition}>{children}</div>
+      <div className="mobile-scroll-controls" aria-label={label}>
+        <button type="button" onClick={() => move(-1)} disabled={active === 0} aria-label="Éléments précédents"><ChevronLeft size={15} /></button>
+        <div>{Array.from({ length: count }, (_, index) => <i className={index === active ? 'active' : ''} key={index} />)}</div>
+        <button type="button" onClick={() => move(1)} disabled={active >= count - 1} aria-label="Éléments suivants"><ChevronRight size={15} /></button>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [roots, setRoots] = useState([]);
@@ -108,6 +139,7 @@ export default function Home() {
 
       <section className="commerce-section commerce-categories">
         <div className="commerce-section-title"><div><span>Explorer</span><h2>Nos catégories</h2></div><Link to="/categories">Voir tout <ArrowRight size={16} /></Link></div>
+        <ScrollPager count={categories.length + 1} label="Navigation des catégories">
         <div className="commerce-category-grid">
           {categories.map((category) => <Link to={`/products?category=${category.slug || category._id}`} className="commerce-category-card" key={category._id || category.slug}>
             <div><img src={category.image} alt={category.name} /></div>
@@ -116,11 +148,14 @@ export default function Home() {
           </Link>)}
           <Link to="/categories" className="commerce-category-card commerce-category-more"><div><ShoppingBag /></div><strong>Toutes les catégories</strong><span>Voir le catalogue <ChevronRight size={14} /></span></Link>
         </div>
+        </ScrollPager>
       </section>
 
       <section className="commerce-section">
         <div className="commerce-section-title"><div><span>Les favoris du moment</span><h2>Produits populaires</h2></div><Link to="/products">Voir tous les produits <ArrowRight size={16} /></Link></div>
-        <div className="products-grid commerce-product-grid">{popular.slice(0, 5).map((product) => <ProductCard product={product} key={product._id} />)}</div>
+        <ScrollPager count={Math.max(1, popular.slice(0, 5).length)} label="Navigation des produits populaires">
+          <div className="products-grid commerce-product-grid">{popular.slice(0, 5).map((product) => <ProductCard product={product} key={product._id} />)}</div>
+        </ScrollPager>
       </section>
 
       <section className="commerce-promo-grid">
@@ -131,7 +166,9 @@ export default function Home() {
 
       <section className="commerce-section">
         <div className="commerce-section-title"><div><span>Tout juste arrivés</span><h2>Nos nouveautés</h2></div><Link to="/products?sort=newest">Voir les nouveautés <ArrowRight size={16} /></Link></div>
-        <div className="products-grid commerce-product-grid">{newProducts.slice(0, 5).map((product) => <ProductCard product={product} key={product._id} />)}</div>
+        <ScrollPager count={Math.max(1, newProducts.slice(0, 5).length)} label="Navigation des nouveautés">
+          <div className="products-grid commerce-product-grid">{newProducts.slice(0, 5).map((product) => <ProductCard product={product} key={product._id} />)}</div>
+        </ScrollPager>
       </section>
 
       <section className="commerce-brand-section">

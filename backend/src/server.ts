@@ -12,20 +12,22 @@ import orderRoutes from './routes/order.routes.ts';
 import userRoutes from './routes/user.routes.ts';
 import contactRoutes from './routes/contact.routes.ts';
 import { errorHandler, notFound } from './middlewares/error.middleware.ts';
+import { assertRuntimeConfig } from './config/runtime.ts';
 
 dotenv.config();
 
-const required = ['MONGO_URI', 'JWT_SECRET'];
-const missing = required.filter((key) => !process.env[key]);
-if (missing.length) {
-  console.error(`Missing required environment variables: ${missing.join(', ')}`);
+let runtimeConfig;
+try {
+  runtimeConfig = assertRuntimeConfig(process.env);
+} catch (error) {
+  console.error(error.message);
   process.exit(1);
 }
 
-await connectDB();
+await connectDB(runtimeConfig.mongoUri);
 
 const app = express();
-const allowedOrigins = String(process.env.CLIENT_URL || '')
+const allowedOrigins = runtimeConfig.clientUrl
   .split(',')
   .map((origin) => origin.trim().replace(/\/$/, ''))
   .filter(Boolean);

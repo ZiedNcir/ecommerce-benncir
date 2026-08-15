@@ -27,8 +27,8 @@ export default function AdminSetup() {
 
   return (
     <main className="login">
-      <form onSubmit={submit}>
-        <h1>Premier administrateur</h1>
+      <form onSubmit={submit} className="admin-auth-card">
+        <div className="auth-brand-mark">B</div><span className="auth-brand-name">BÊN NCÎR <small>PREMIÈRE CONFIGURATION</small></span><h1>Créez votre accès admin</h1>
         <p className="form-note">Cette page fonctionne uniquement si aucun compte admin n’existe encore.</p>
         {error && <p className="form-error">{error}</p>}
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nom" required />

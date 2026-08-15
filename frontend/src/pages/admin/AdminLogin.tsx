@@ -32,8 +32,8 @@ export default function AdminLogin() {
 
   return (
     <main className="login">
-      <form onSubmit={submit}>
-        <h1>Admin Login</h1>
+      <form onSubmit={submit} className="admin-auth-card">
+        <div className="auth-brand-mark">B</div><span className="auth-brand-name">BÊN NCÎR <small>COMMERCE ADMIN</small></span><h1>Bienvenue dans votre espace admin</h1><p className="auth-subtitle">Connectez-vous pour piloter votre boutique.</p>
         {params.get('session') === 'expired' && <p className="form-note">Session expirée. Connectez-vous à nouveau.</p>}
         {params.get('role') === 'denied' && <p className="form-note">Accès réservé aux administrateurs.</p>}
         {error && <p className="form-error">{error}</p>}

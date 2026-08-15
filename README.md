@@ -48,7 +48,7 @@ npm run dev
 
 ## API intégrée
 
-Le frontend utilise `frontend/src/services/api.js` pour appeler :
+Le frontend utilise `frontend/src/services/api.ts` pour appeler :
 
 - `GET /api/products`
 - `GET /api/products/:id`
@@ -60,7 +60,7 @@ Le frontend utilise `frontend/src/services/api.js` pour appeler :
 - `GET /api/orders`
 - `POST /api/auth/login`
 
-Des données mockées sont incluses dans `frontend/src/assets/mockData.js` pour afficher l’interface même si le backend MongoDB n’est pas encore lancé.
+Des données mockées sont incluses dans `frontend/src/assets/mockData.ts` pour afficher l’interface uniquement lorsque `VITE_ENABLE_DEMO=true` en développement.
 
 ## Product filtering update
 
@@ -123,11 +123,15 @@ Cette version ajoute une gestion backend complète depuis MongoDB local :
 - `GET /api/categories?includeInactive=true` : liste catégories avec compteur produits.
 - `POST /api/categories` : nouvelle catégorie.
 - `PUT /api/categories/:id` : modification catégorie.
-- `DELETE /api/categories/:id?force=true` : désactivation catégorie.
+- `DELETE /api/categories/:id?force=true` : désactivation réversible de catégorie.
 - `GET /api/products?includeInactive=true` : liste produits admin, actifs et inactifs.
 - `POST /api/products` : insertion produit avec une ou plusieurs catégories.
 - `PUT /api/products/:id` : modification produit.
-- `DELETE /api/products/:id` : désactivation produit.
+- `DELETE /api/products/:id` : désactivation réversible de produit.
+
+## Production baseline
+
+Production requires `MONGO_URI`, `JWT_SECRET` and `CLIENT_URL`. The backend rejects placeholder or short JWT secrets in production. Catalog deletion from the admin dashboard is reversible deactivation, preserving historical references. Before deployment, run `npm test` and `npm run typecheck` in `backend`, then `npm run typecheck`, `npm run build`, and root `npm run lint`.
 - `POST /api/users`, `PUT /api/users/:id`, `DELETE /api/users/:id` : CRUD utilisateurs admin.
 
 Un produit peut recevoir `categories: [categoryId1, categoryId2]`. Le champ `category` est automatiquement synchronisé avec la première catégorie pour compatibilité avec l'ancien frontend.

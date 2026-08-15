@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ChevronDown, ChevronLeft, ChevronRight, FolderTree, Grid3X3, List, SearchX, SlidersHorizontal, Sparkles, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, FolderTree, Grid3X3, List, LoaderCircle, SearchX, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 import Breadcrumb from '../../components/Breadcrumb.tsx';
 import ProductCard from '../../components/ProductCard.tsx';
 import Loading from '../../components/Loading.tsx';
@@ -8,16 +8,32 @@ import { productsApi } from '../../services/api.ts';
 
 const normalizeCategory = (value) => (!value || value === 'all' ? '' : value);
 const currency = (value) => Number(value || 0).toLocaleString('fr-FR');
+const MAX_PRICE = 5000;
+
+function pageItems(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
+  const visible = new Set([1, total, current, current - 1, current + 1].filter((item) => item > 0 && item <= total));
+  const pages = [...visible].sort((a, b) => a - b);
+  return pages.reduce((result, item, index) => {
+    if (index && item - pages[index - 1] > 1) result.push(`ellipsis-${item}`);
+    result.push(item);
+    return result;
+  }, []);
+}
 
 export default function Products() {
   const { categoryId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const activeCategory = normalizeCategory(categoryId) || normalizeCategory(searchParams.get('category'));
-  const [payload, setPayload] = useState({ items: [], total: 0, page: 1, pages: 1, filters: { categories: [], brands: [], price: { min: 0, max: 3500 } } });
+  const [payload, setPayload] = useState({ items: [], total: 0, page: 1, pages: 1, filters: { categories: [], brands: [], price: { min: 0, max: MAX_PRICE } } });
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [view, setView] = useState(searchParams.get('view') || 'grid');
   const [openCategories, setOpenCategories] = useState({});
+  const appendNextPage = useRef(false);
+  const loadingMoreRef = useRef(false);
+  const loadMoreSentinel = useRef(null);
 
   const sort = searchParams.get('sort') || 'popular';
   const minPrice = searchParams.get('minPrice') || '';
@@ -29,6 +45,8 @@ export default function Products() {
   useEffect(() => {
     let alive = true;
     setLoading(true);
+    const append = appendNextPage.current;
+    appendNextPage.current = false;
     productsApi.list({
       meta: true,
       limit: 24,
@@ -43,22 +61,40 @@ export default function Products() {
     })
       .then((data) => {
         if (!alive) return;
-        setPayload({
-          items: data.items || [],
+        setPayload((current) => ({
+          items: append ? [...current.items, ...(data.items || [])] : (data.items || []),
           total: data.total || 0,
           page: data.page || 1,
           pages: data.pages || 1,
-          filters: data.filters || { categories: [], brands: [], price: { min: 0, max: 3500 } },
-        });
+          filters: data.filters || { categories: [], brands: [], price: { min: 0, max: MAX_PRICE } },
+        }));
       })
       .catch(() => {
         if (alive) setPayload((current) => ({ ...current, items: [], total: 0, pages: 1 }));
       })
       .finally(() => {
         if (alive) setLoading(false);
+        if (alive) {
+          setLoadingMore(false);
+          loadingMoreRef.current = false;
+        }
       });
     return () => { alive = false; };
   }, [query, activeCategory, minPrice, maxPrice, brand, inStock, sort, page]);
+
+  useEffect(() => {
+    const sentinel = loadMoreSentinel.current;
+    if (!sentinel || payload.page >= payload.pages) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || loadingMoreRef.current || loading) return;
+      loadingMoreRef.current = true;
+      appendNextPage.current = true;
+      setLoadingMore(true);
+      updateFilter('page', payload.page + 1);
+    }, { rootMargin: '280px 0px' });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [payload.page, payload.pages, loading]);
 
   const categories = payload.filters.categories || [];
   const selectedCategory = useMemo(() => categories.find((category) => category.slug === activeCategory || category._id === activeCategory), [categories, activeCategory]);
@@ -81,7 +117,10 @@ export default function Products() {
     const next = new URLSearchParams(searchParams);
     if (value === undefined || value === null || value === '' || value === false) next.delete(key);
     else next.set(key, String(value));
-    if (key !== 'page') next.delete('page');
+    if (key !== 'page') {
+      next.delete('page');
+      appendNextPage.current = false;
+    }
     setSearchParams(next);
   };
 
@@ -98,12 +137,13 @@ export default function Products() {
   };
 
   const clearFilters = () => {
+    appendNextPage.current = false;
     setView('grid');
     setSearchParams({});
   };
 
   const hasFilters = Boolean(query || activeCategory || minPrice || maxPrice || brand || inStock || sort !== 'popular');
-  const priceMax = payload.filters.price?.max || 3500;
+  const priceMax = MAX_PRICE;
 
   return (
     <>
@@ -112,8 +152,8 @@ export default function Products() {
       <section className="product-market-hero">
         <div>
           <span className="eyebrow"><Sparkles size={16} /> Catalogue dynamique</span>
-          <h1>{selectedCategory?.name || (query ? `Recherche : ${query}` : 'Tous les produits')}</h1>
-          <p>Les produits, catégories, prix, marques et stocks sont chargés depuis MongoDB via l’API backend.</p>
+          <h1>{selectedCategory?.name || (query ? `Recherche : ${query}` : 'Notre catalogue')}</h1>
+          <p>Découvrez notre sélection de produits et trouvez facilement ce qui correspond à vos besoins.</p>
           {hasFilters ? <button className="clear-filter-btn" onClick={clearFilters}><X size={16} /> Réinitialiser les filtres</button> : null}
         </div>
         <div className="product-hero-stats">
@@ -178,12 +218,14 @@ export default function Products() {
             </div>
           </div>
 
-          <div className="filter-block">
+          <div className="filter-block price-filter-block">
             <h4>Prix</h4>
             <label>Prix minimum</label>
             <input type="number" min="0" placeholder="0" value={minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
             <label>Prix maximum</label>
-            <input type="range" min="0" max={priceMax || 3500} value={maxPrice || priceMax || 3500} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+            <div className="price-range-control">
+              <input type="range" min="0" max={priceMax} value={maxPrice || priceMax} onChange={(event) => updateFilter('maxPrice', event.target.value)} aria-label="Prix maximum" />
+            </div>
             <div className="range"><span>0 TND</span><span>{currency(maxPrice || priceMax)} TND</span></div>
           </div>
 
@@ -223,13 +265,24 @@ export default function Products() {
               <div className={view === 'list' ? 'products-grid product-list-view' : 'products-grid'}>
                 {payload.items.map((product) => <ProductCard product={product} key={product._id} />)}
               </div>
+              <div ref={loadMoreSentinel} className="load-more-sentinel" aria-hidden="true" />
               {payload.pages > 1 ? (
-                <div className="pagination-row">
-                  <button disabled={payload.page <= 1} onClick={() => updateFilter('page', payload.page - 1)}><ChevronLeft size={18} /> Précédent</button>
-                  <span>Page {payload.page} / {payload.pages}</span>
-                  <button disabled={payload.page >= payload.pages} onClick={() => updateFilter('page', payload.page + 1)}>Suivant <ChevronRight size={18} /></button>
-                </div>
+                <nav className="pagination-row" aria-label="Pagination des produits">
+                  <button type="button" disabled={payload.page <= 1} onClick={() => { appendNextPage.current = false; updateFilter('page', payload.page - 1); }}><ChevronLeft size={18} /> Précédent</button>
+                  <div className="pagination-pages">
+                    {pageItems(payload.page, payload.pages).map((item) => typeof item === 'number' ? (
+                      <button type="button" className={item === payload.page ? 'active' : ''} onClick={() => updateFilter('page', item)} aria-current={item === payload.page ? 'page' : undefined} key={item}>{item}</button>
+                    ) : <span className="pagination-ellipsis" key={item}>…</span>)}
+                  </div>
+                  <button type="button" disabled={payload.page >= payload.pages} onClick={() => { appendNextPage.current = false; updateFilter('page', payload.page + 1); }}>Suivant <ChevronRight size={18} /></button>
+                </nav>
               ) : null}
+              {payload.page < payload.pages ? <div className="load-more-area">
+                {loadingMore ? <div className="load-more-status" role="status"><LoaderCircle size={18} className="loading-spin" /><span>Chargement des produits suivants…</span></div> : null}
+                <button className={`load-more-button ${loadingMore ? 'is-loading' : ''}`} type="button" onClick={() => { if (loadingMoreRef.current) return; loadingMoreRef.current = true; appendNextPage.current = true; setLoadingMore(true); updateFilter('page', payload.page + 1); }} disabled={loadingMore}>
+                  {loadingMore ? <><LoaderCircle size={17} className="loading-spin" /> Chargement en cours</> : 'Charger plus de produits'}
+                </button>
+              </div> : null}
             </>
           ) : (
             <div className="empty-products"><SearchX size={54} /><h3>Aucun produit trouvé</h3><p>Ajoutez un produit dans le dashboard ou modifiez les filtres.</p><button onClick={clearFilters}>Réinitialiser</button></div>

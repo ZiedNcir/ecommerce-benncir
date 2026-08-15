@@ -58,7 +58,7 @@ export default function Header() {
 
   return (
     <header className="site-header">
-      <div className="topbar"><div className="top-left"><span><Phone size={16}/> +216 24 037 404</span><span><Mail size={16}/> benncircommerce@gmail.com</span></div><div className="top-shipping"><Truck size={18}/> Livraison partout en Tunisie</div><div className="top-social">Suivez-nous : <i>f</i><i>◎</i><i className="wa">◉</i></div></div>
+      <div className="topbar"><div className="top-left"><span><Phone size={16}/> +216 24 037 404</span><span><Mail size={16}/> benncircommerce@gmail.com</span></div><div className="top-shipping"><Truck size={18}/> Livraison partout en Tunisie</div><div className="top-social">Suivez-nous : <a href="https://www.facebook.com/profile.php?id=100083549013785" target="_blank" rel="noreferrer" aria-label="BÊN NCÎR sur Facebook">f</a><a href="https://www.instagram.com/benncircommerce/" target="_blank" rel="noreferrer" aria-label="BÊN NCÎR sur Instagram">◎</a><a className="wa" href="https://wa.me/21624037404" target="_blank" rel="noreferrer" aria-label="Contacter BÊN NCÎR sur WhatsApp">◉</a></div></div>
       <div className="mainbar">
         <Link to="/" className="logo-link"><Logo /></Link>
         <form className="search header-search-autocomplete" onSubmit={submitSearch} role="search">
