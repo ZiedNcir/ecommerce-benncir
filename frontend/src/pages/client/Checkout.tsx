@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Home, Info, PackageCheck, Phone, ShoppingBag, Truck } from 'lucide-react';
+import { ArrowRight, Check, Home, Info, MailCheck, MailWarning, PackageCheck, Phone, ShoppingBag, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumb.tsx';
 import BenefitBar from '../../components/BenefitBar.tsx';
@@ -7,7 +7,7 @@ import { useCartStore } from '../../store/cartStore.ts';
 import { ordersApi } from '../../services/api.ts';
 import ImageWithSkeleton from '../../components/ImageWithSkeleton.tsx';
 
-const DELIVERY_FEE = 7;
+const DELIVERY_FEE = 8;
 
 export default function Checkout() {
   const { items, subtotal, clear } = useCartStore();
@@ -15,13 +15,13 @@ export default function Checkout() {
   const [submitError, setSubmitError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    fullName: 'Ahmed Ben Ncîr',
-    email: 'client@example.com',
-    phone: '+216 24 123 456',
-    address: 'Rue Habib Bourguiba, Immeuble Zitouna, Appartement 12',
-    city: 'Tunis',
-    governorate: 'Tunis',
-    postalCode: '1001',
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    governorate: '',
+    postalCode: '',
     note: '',
   });
   const deliveryFee = DELIVERY_FEE;
@@ -72,6 +72,10 @@ export default function Checkout() {
             <h1>Commande confirmée</h1>
             <p>Merci pour votre achat. Votre commande a bien été enregistrée. Notre équipe va vous contacter avant la livraison à domicile.</p>
             <div className="order-ref"><PackageCheck size={18} /> Référence : {reference}</div>
+            <div className={`order-email-result ${confirmedOrder.adminEmailSent ? 'sent' : 'warning'}`}>
+              {confirmedOrder.adminEmailSent ? <MailCheck size={18} /> : <MailWarning size={18} />}
+              <span>{confirmedOrder.adminEmailSent ? 'Notification envoyée à benncircommerce@gmail.com' : 'Commande enregistrée — notification email à vérifier dans le dashboard'}</span>
+            </div>
           </section>
 
           <section className="order-confirmation-body">
@@ -81,7 +85,7 @@ export default function Checkout() {
               <div className="confirmation-row"><span>Téléphone</span><b>{confirmedOrder.customer?.phone || form.phone}</b></div>
               <div className="confirmation-row"><span>Adresse</span><b>{confirmedOrder.customer?.address || form.address}</b></div>
               <div className="confirmation-row"><span>Méthode de livraison</span><b>Livraison à domicile</b></div>
-              <div className="confirmation-row"><span>Frais de livraison</span><b>7,00 DT</b></div>
+              <div className="confirmation-row"><span>Frais de livraison</span><b>8,00 DT</b></div>
               <div className="confirmation-row"><span>Paiement</span><b>À la livraison</b></div>
               <div className="confirmation-row"><span>Total</span><b>{Number(confirmedOrder.total || total).toFixed(2)} DT</b></div>
               <div className="confirmation-actions">
@@ -95,7 +99,7 @@ export default function Checkout() {
               <div className="timeline">
                 <div className="timeline-step active"><div className="timeline-dot">1</div><div><b>Commande reçue</b><p>Votre commande est stockée et transmise à l'administrateur.</p></div></div>
                 <div className="timeline-step"><div className="timeline-dot">2</div><div><b>Confirmation téléphone</b><p>Nous validons les détails avec vous avant préparation.</p></div></div>
-                <div className="timeline-step"><div className="timeline-dot">3</div><div><b>Livraison à domicile</b><p>Livraison unique disponible : domicile, frais fixes 7 DT.</p></div></div>
+                <div className="timeline-step"><div className="timeline-dot">3</div><div><b>Livraison à domicile</b><p>Livraison unique disponible : domicile, frais fixes 8 DT.</p></div></div>
                 <div className="timeline-step"><div className="timeline-dot">4</div><div><b>Paiement à réception</b><p>Vous payez en espèces au moment de recevoir la commande.</p></div></div>
               </div>
             </div>
@@ -122,13 +126,13 @@ export default function Checkout() {
             <h2>Adresse de livraison</h2>
             <label>Nom complet *<input required name="fullName" value={form.fullName} onChange={change} /></label>
             <label>Adresse *<input required name="address" value={form.address} onChange={change} /></label>
-            <div className="two"><label>Ville *<input name="city" value={form.city} onChange={change} /></label><label>Gouvernorat *<select name="governorate" value={form.governorate} onChange={change}><option>Tunis</option><option>Ariana</option><option>Ben Arous</option><option>Sousse</option><option>Sfax</option></select></label></div>
-            <div className="two"><label>Code postal *<input name="postalCode" value={form.postalCode} onChange={change} /></label><label>Pays *<select><option>Tunisie</option></select></label></div>
+            <div className="two"><label>Ville *<input required name="city" value={form.city} onChange={change} /></label><label>Gouvernorat *<select required name="governorate" value={form.governorate} onChange={change}><option value="" disabled>Sélectionner</option><option>Tunis</option><option>Ariana</option><option>Ben Arous</option><option>Sousse</option><option>Sfax</option></select></label></div>
+            <div className="two"><label>Code postal *<input required name="postalCode" value={form.postalCode} onChange={change} /></label><label>Pays *<select><option>Tunisie</option></select></label></div>
           </div>
           <div>
             <h2>Méthode de livraison</h2>
-            <label className="ship active single-delivery"><input name="ship" type="radio" defaultChecked readOnly /><Truck /><span><b>Livraison à domicile</b><small>Livraison directement à votre adresse en Tunisie.</small></span><strong>7,00 DT</strong></label>
-            <div className="delivery-note"><Info size={18} /> Une seule méthode est disponible : livraison à domicile à 7 DT.</div>
+            <label className="ship active single-delivery"><input name="ship" type="radio" defaultChecked readOnly /><Truck /><span><b>Livraison à domicile</b><small>Livraison directement à votre adresse en Tunisie.</small></span><strong>8,00 DT</strong></label>
+            <div className="delivery-note"><Info size={18} /> Une seule méthode est disponible : livraison à domicile à 8 DT.</div>
             <label>Notes de commande<textarea name="note" value={form.note} onChange={change} placeholder="Ajoutez des notes concernant votre commande..." /></label>
           </div>
         </section>
@@ -137,7 +141,7 @@ export default function Checkout() {
           {items.map((item) => <p key={item._id || item.id}><span><ImageWithSkeleton wrapperClassName="checkout-product-image" src={item.image || item.images?.[0]} alt="" />{item.name}<small>Quantité : {item.qty}</small></span><b>{Number(item.price * item.qty).toFixed(2)} DT</b></p>)}
           <hr />
           <p>Sous-total<b>{subtotal().toFixed(2)} DT</b></p>
-          <p>Livraison à domicile<b>7,00 DT</b></p>
+          <p>Livraison à domicile<b>8,00 DT</b></p>
           <h2>Total à payer <b>{total.toFixed(2)} DT</b></h2>
           <div className="cod"><Home /> Paiement à la livraison<br /><small>Vous paierez en espèces à la réception.</small></div>
           {submitError ? <p className="error-msg">{submitError}</p> : null}<button className="btn wide" disabled={submitting || !items.length}>{submitting ? 'Enregistrement...' : 'Confirmer la commande'} <ArrowRight /></button>

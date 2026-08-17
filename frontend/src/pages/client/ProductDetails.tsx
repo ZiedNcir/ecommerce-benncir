@@ -74,8 +74,6 @@ export default function ProductDetails() {
   function addToCart() {
     if (!maxQuantity) return;
     add(product, Math.min(qty, maxQuantity));
-    setCartNotice(`${Math.min(qty, maxQuantity)} article(s) ajouté(s) au panier.`);
-    window.setTimeout(() => setCartNotice(''), 2500);
   }
 
   return (

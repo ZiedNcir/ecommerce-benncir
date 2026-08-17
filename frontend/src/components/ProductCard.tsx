@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
         </p>
         <div className="price"><b>{Number(product.price || 0).toLocaleString('fr-FR')},00 TND</b>{product.oldPrice ? <del>{Number(product.oldPrice).toLocaleString('fr-FR')},00 TND</del> : null}</div>
         <div className={product.stock > 2 ? 'stock' : 'stock limited'}>{product.stock > 2 ? 'En stock' : 'Stock limité'}</div>
-        <button onClick={() => add(product)} className="cart-mini" aria-label="Ajouter au panier"><ShoppingCart size={18} /></button>
+        <button onClick={() => add(product)} className="cart-mini" aria-label="Ajouter au panier"><ShoppingCart size={18} /><span>Ajouter</span></button>
       </div>
     </article>
   );

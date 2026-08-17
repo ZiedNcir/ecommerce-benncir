@@ -30,6 +30,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [view, setView] = useState(searchParams.get('view') || 'grid');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openCategories, setOpenCategories] = useState({});
   const appendNextPage = useRef(false);
   const loadingMoreRef = useRef(false);
@@ -174,7 +175,10 @@ export default function Products() {
       </div>
 
       <div className="shop-layout premium-shop-layout">
-        <aside className="filters filters-pro premium-filters">
+        <button type="button" className="mobile-filter-toggle" aria-expanded={mobileFiltersOpen} aria-controls="catalogue-filters" onClick={() => setMobileFiltersOpen((open) => !open)}>
+          <SlidersHorizontal size={18} /><span>{mobileFiltersOpen ? 'Masquer les filtres' : 'Afficher les filtres'}</span>{hasFilters ? <b>Actifs</b> : null}<ChevronDown size={18} className={mobileFiltersOpen ? 'open' : ''} />
+        </button>
+        <aside id="catalogue-filters" className={`filters filters-pro premium-filters ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
           <div className="filter-head"><h3>Filtres</h3><span>{payload.total}</span></div>
 
           <div className="filter-block category-filter-block">

@@ -53,7 +53,7 @@ export async function createOrder(req, res) {
   if (missingFields.length) return res.status(400).json({ message: `Informations client manquantes : ${missingFields.join(', ')}` });
 
   const items = await hydrateItems(requestedItems);
-  const { subtotal, total } = calculateOrderTotals(items, 7);
+  const { subtotal, total } = calculateOrderTotals(items, 8);
   await updateStock(items, -1);
   let order;
   try {
@@ -85,8 +85,11 @@ export async function createOrder(req, res) {
     const result = await sendAdminOrderEmail(order);
     if (result.sent) {
       order.adminEmailSent = true;
-      await order.save({ validateBeforeSave: false });
+      order.adminEmailError = '';
+    } else if (result.skipped) {
+      order.adminEmailError = `Email non configuré : ${result.reason}`;
     }
+    await order.save({ validateBeforeSave: false });
   } catch (error) {
     order.adminEmailError = error.message;
     await order.save({ validateBeforeSave: false });
