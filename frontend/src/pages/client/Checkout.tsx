@@ -199,15 +199,7 @@ export default function Checkout() {
             </label>
             <div className="two">
               <label>Ville *
-                <select 
-                  required 
-                  name="city" 
-                  value={form.city} 
-                  onChange={handleChange}
-                  disabled={!form.governorate}
-                >
-                  <option value="" disabled>Sélectionner </option>
-                </select>
+                            <input required name="city" value={form.city} onChange={handleChange} />
               </label>
               <label>Gouvernorat *
                 <select 
