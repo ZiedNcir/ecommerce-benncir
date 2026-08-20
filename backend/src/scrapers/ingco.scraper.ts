@@ -574,7 +574,7 @@ function parseRobotsGroups(text: string) {
 }
 
 function robotsAllows(text: string, targetUrl: string) {
-  const botName = USER_AGENT.split(/[\s/]/)[0].toLowerCase();
+  const botName = USER_AGENT.split(/[\/\s]/)[0].toLowerCase();
   const groups = parseRobotsGroups(text);
   const exact = groups.filter((group) => group.agents.some((agent) => botName.includes(agent) || agent === botName));
   const selected = exact.length ? exact : groups.filter((group) => group.agents.includes('*'));

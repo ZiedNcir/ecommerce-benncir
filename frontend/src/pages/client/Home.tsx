@@ -158,11 +158,7 @@ export default function Home() {
         </ScrollPager>
       </section>
 
-      <section className="commerce-promo-grid">
-        <Link to="/products?featured=true" className="commerce-promo-card pink"><div><span>Offres spéciales</span><h3>Des prix pensés pour vous</h3><p>Profitez de notre sélection du moment.</p><b>Voir les offres <ArrowRight size={16} /></b></div><img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?auto=format&fit=crop&w=700&q=82" alt="Offres spéciales" /></Link>
-        <Link to="/products?sort=newest" className="commerce-promo-card blue"><div><span>Nouveautés</span><h3>Les derniers produits ajoutés</h3><p>Découvrez les nouvelles références du catalogue.</p><b>Découvrir <ArrowRight size={16} /></b></div><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=82" alt="Nouveautés" /></Link>
-        <Link to="/categories" className="commerce-promo-card green"><div><span>Collections</span><h3>Une sélection pour chaque envie</h3><p>Parcourez nos univers et trouvez votre produit.</p><b>Explorer <ArrowRight size={16} /></b></div><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=700&q=82" alt="Collections" /></Link>
-      </section>
+ 
 
       <section className="commerce-section">
         <div className="commerce-section-title"><div><span>Tout juste arrivés</span><h2>Nos nouveautés</h2></div><Link to="/products?sort=newest">Voir les nouveautés <ArrowRight size={16} /></Link></div>
@@ -196,17 +192,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="commerce-content-grid commerce-section">
-        <div>
-          <div className="commerce-section-title"><div><span>Conseils & inspirations</span><h2>Nos derniers guides</h2></div></div>
-          <div className="commerce-blog-grid">{blogItems.map((item) => <article key={item.title}><img src={item.image} alt="" /><div><span>{item.tag}</span><h3>{item.title}</h3><Link to="/about">Lire l’article <ArrowRight size={14} /></Link></div></article>)}</div>
-        </div>
-        <form className="commerce-newsletter" onSubmit={handleNewsletter}>
-          <Mail size={36} /><span>Restez informé</span><h2>Recevez nos nouveautés et nos offres.</h2><p>Inscrivez-vous à notre newsletter pour découvrir les nouveaux produits en avant-première.</p>
-          {subscribed ? <div className="commerce-newsletter-success">Merci, votre inscription est enregistrée.</div> : <div><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Votre adresse e-mail" required /><button type="submit">S’abonner</button></div>}
-        </form>
-      </section>
-
+     
       <footer className="commerce-footer">
         <div className="commerce-footer-main">
           <div className="commerce-footer-brand"><strong>BÊN NCÎR</strong><span>COMMERCE</span><p>Votre destination shopping en ligne. Une sélection multi-catégories, un service fiable et une expérience simple.</p></div>
